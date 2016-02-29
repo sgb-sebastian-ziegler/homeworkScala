@@ -1,42 +1,386 @@
 swagger: '2.0'
-
 info:
-  version: "1.0.0"
-  title: Weather API
-
-consumes:
-- application/json
-produces:
-- application/json
-
+  version: v1
+  title: Student Notes
+  description: It allows to store student notes
 paths:
-  /weather/city/{cityName}:
+  /student:
     get:
-      tags:
-      - weather
-      description: Gets the weather for a given city
+      summary: Get all students
+      description: |
+        Return all the students
       parameters:
-      - name: cityName
-        in: path
-        required: true
-        type: string
+        - name: date
+          in: query
+          description: Date to filter students by date.
+          required: false
+          type: string
+          format: date
+        - name: signature
+          in: query
+          description: Signature name to filter students by signature.
+          required: false
+          type: string
+          format: string
+        - name: grade
+          in: query
+          description: Grade number to filter students by grade.
+          required: false
+          type: number
+          format: number
+      tags:
+        - student
       responses:
         200:
-          description: The weather information was successfully retrieved.
+          description: Successful response
           schema:
-            $ref: "#/definitions/WeatherResponse"
+            type: array
+            items:
+              $ref: '#/definitions/student'
         404:
-          description: The weather information could not be found.
-definitions:
-  WeatherResponse:
-    type: object
-    properties:
-      cityName:
-        description: The name of the city whose information was retrieved
+          description: Student was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      summary: Create a student
+      description: |
+        Create a new student
+      parameters:
+        - name: name
+          in: body
+          description: Student name.
+          required: true
+          schema:
+            $ref: "#/definitions/student"
+      tags:
+        - student
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/student'
+        400:
+          description: Parameters left
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  /student/{studentId}:
+    parameters:
+      - name: studentId
+        in: path
+        description: Required Id to get an student.
+        required: true
         type: string
-      temperature:
-        description: The temperature, in celsius
+        format: number
+    get:
+      summary: Get student
+      description: |
+        Return an specific student
+      parameters:
+        - name: date
+          in: query
+          description: Date to filter grades.
+          required: false
+          type: string
+          format: date
+        - name: signature
+          in: query
+          description: Signature name to filter grades.
+          required: false
+          type: string
+          format: string
+        - name: grade
+          in: query
+          description: Grade number to filter grades.
+          required: false
+          type: number
+          format: number
+      tags:
+        - student
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/student'
+        404:
+          description: Student was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      summary: Modify a student
+      description: |
+        Modify a student
+      parameters:
+        - name: name
+          in: body
+          description: Student data.
+          required: false
+          schema:
+            $ref: "#/definitions/student"
+      tags:
+        - student
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/student'
+        400:
+          description: "Bad request, parameters left"
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        404:
+          description: Student was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      summary: Deletes a student
+      description: |
+        Delete a student
+      tags:
+        - student
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/student'
+        404:
+          description: Student was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  /student/{studentId}/grades:
+    parameters:
+      - name: studentId
+        in: path
+        description: Required Id to get a student.
+        required: true
+        type: string
+        format: number
+    get:
+      summary: Grades
+      description: |
+        Return an specific grade from a student
+      parameters:
+        - name: date
+          in: query
+          description: Date to filter grades.
+          required: false
+          type: string
+          format: date
+        - name: signature
+          in: query
+          description: Signature name to filter grades.
+          required: false
+          type: string
+          format: string
+        - name: grade
+          in: query
+          description: Grade number to filter grades.
+          required: false
+          type: number
+          format: number
+      tags:
+        - grade
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/grade'
+        400:
+          description: Wrong parameters
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        404:
+          description: Grade was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      summary: Grades
+      description: |
+        Creates an specific grade for a student
+      parameters:
+        - name: grades
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/grade'
+      tags:
+        - grade
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/grade'
+        400:
+          description: Wrong request
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  /student/{studentId}/grades/{gradeId}:
+    parameters:
+      - name: studentId
+        in: path
+        description: Required Id to get a student.
+        required: true
+        type: string
+        format: number
+      - name: gradeId
+        in: path
+        description: Required Id to get an student grade.
+        required: true
+        type: string
+        format: number
+    get:
+      summary: Grades
+      description: |
+        Return an specific grade from a student
+      parameters:
+        - name: date
+          in: query
+          description: Date to filter grades.
+          required: false
+          type: string
+          format: date
+      tags:
+        - grade
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/grade'
+        404:
+          description: Grade was not found
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    delete:
+      summary: Deletes a grade
+      description: |
+        Delete a grade
+      tags:
+        - grade
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/student'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+definitions:
+  student:
+    type: object
+    required:
+      - name
+      - ci
+    properties:
+      name:
+        type: string
+        description: Student name
+      ci:
+        type: string
+        description: Student identification
+      grades:
+        type: array
+        items:
+          $ref: "#/definitions/grade"
+  grade:
+    type: object
+    required:
+      - id
+      - date
+      - signature
+      - grade
+    properties:
+      id:
+        type: string
+        description: Id of the grade
+      date:
+        type: string
+        format: date
+        description: Date of the grade
+      signature:
+        type: string
+        description: Signature name
+      grade:
         type: number
-      pressure:
-        description: The atmospheric pressure, in atm
-        type: number
+        description: Grade of the student
+  error:
+    type: object
+    required:
+      - msg
+      - code
+    properties:
+      msg:
+        type: string
+        description: "Error message"
+        example: "Student was not found"
+      code:
+        type: string
+        description: "Error code"
+        example: "1204"
