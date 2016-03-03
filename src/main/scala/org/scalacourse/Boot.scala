@@ -5,6 +5,7 @@ import com.synergygb.zordon.core.ServiceBoot
 import com.synergygb.zordon.gen.models.{student, grade, error}
 import com.synergygb.zordon.gen.routes.ApplicationRoutesConsolidated
 import spray.json.DefaultJsonProtocol
+import spray.json.DefaultJsonProtocol._
 import spray.routing.Route
 import spray.http.StatusCodes._
 
